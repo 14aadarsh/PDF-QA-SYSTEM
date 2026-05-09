@@ -1,5 +1,4 @@
-langchain==0.3.20
-langchain-community==0.3.20
+langchain-community
 langchain-groq
 langchain-core
 langchain-text-splitters
@@ -8,3 +7,4 @@ pypdf
 streamlit
 sentence-transformers
 huggingface-hub
+langchain
