@@ -1,7 +1,11 @@
 import streamlit as st
+import os
 from pdf_loader import load_and_split_pdf
 from vector_store import create_vector_store
 from qa_chain import create_qa_chain, get_answer
+
+# ── API Key ───────────────────────────────────────────────
+api_key = os.environ.get("GROQ_API_KEY", "")
 
 # ── Page config ──────────────────────────────────────────
 st.set_page_config(
@@ -10,6 +14,12 @@ st.set_page_config(
     layout="centered"
 )
 
+# ── Sidebar ───────────────────────────────────────────────
+with st.sidebar:
+    st.title("⚙️ How to Use")
+    st.markdown("1️⃣ PDF upload karo")
+    st.markdown("2️⃣ Question poochho")
+    st.markdown("3️⃣ Answer pao ✅")
 
 # ── Title ─────────────────────────────────────────────────
 st.title("📄 PDF Question Answering System")
@@ -34,7 +44,7 @@ uploaded_file = st.file_uploader(
 
 if uploaded_file:
     if not api_key:
-        st.warning("⚠️ Pehle sidebar mein Groq API Key daalo!")
+        st.error("❌ API Key nahi mili! Secrets mein check karo.")
     elif (
         not st.session_state.pdf_loaded or
         uploaded_file.name != st.session_state.pdf_name
@@ -69,14 +79,12 @@ st.divider()
 if st.session_state.pdf_loaded and st.session_state.qa_chain:
     st.subheader("💬 Questions Poochho")
 
-    # Purane messages dikhao
     for msg in st.session_state.messages:
         with st.chat_message(msg["role"]):
             st.write(msg["content"])
             if msg["role"] == "assistant" and msg.get("pages"):
                 st.caption(f"📌 Source Pages: {msg['pages']}")
 
-    # Naya question
     question = st.chat_input("Apna question likho...")
 
     if question:
