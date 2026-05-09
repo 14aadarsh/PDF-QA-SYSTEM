@@ -5,9 +5,9 @@ import os
 
 
 def load_and_split_pdf(uploaded_file):
-    
+
     with tempfile.NamedTemporaryFile(
-        delete=False, 
+        delete=False,
         suffix=".pdf"
     ) as tmp:
         tmp.write(uploaded_file.getvalue())
