@@ -16,14 +16,24 @@ st.set_page_config(
 
 # ── Sidebar ───────────────────────────────────────────────
 with st.sidebar:
-    st.title("⚙️ How to Use")
-    st.markdown("1️⃣ PDF upload karo")
-    st.markdown("2️⃣ Question poochho")
-    st.markdown("3️⃣ Answer pao ✅")
+    st.title("📄 PDF Q&A System")
+    st.markdown("**How to use:**")
+    st.markdown("1. Upload a PDF file")
+    st.markdown("2. Ask any question")
+    st.markdown("3. Get instant answers!")
+    st.divider()
+    st.markdown("**Powered by:**")
+    st.markdown("🦙 LLaMA 3 via Groq")
+    st.markdown("🔗 LangChain")
+    st.markdown("📊 FAISS Vector Store")
+    st.markdown("🤗 HuggingFace Embeddings")
 
 # ── Title ─────────────────────────────────────────────────
 st.title("📄 PDF Question Answering System")
-st.markdown("Apni PDF upload karo aur kuch bhi poochho!")
+st.markdown(
+    "Upload any PDF and ask questions — "
+    "powered by **RAG + LLaMA 3**"
+)
 st.divider()
 
 # ── Session State ─────────────────────────────────────────
@@ -38,18 +48,19 @@ if "messages" not in st.session_state:
 
 # ── PDF Upload ────────────────────────────────────────────
 uploaded_file = st.file_uploader(
-    "📂 PDF Upload karo",
-    type=["pdf"]
+    "Upload your PDF",
+    type=["pdf"],
+    help="Upload any PDF file to get started"
 )
 
 if uploaded_file:
     if not api_key:
-        st.error("❌ API Key nahi mili! Secrets mein check karo.")
+        st.error("❌ API Key not found! Please check Secrets.")
     elif (
         not st.session_state.pdf_loaded or
         uploaded_file.name != st.session_state.pdf_name
     ):
-        with st.spinner("📖 PDF padh raha hoon..."):
+        with st.spinner("Reading and processing PDF..."):
             try:
                 chunks = load_and_split_pdf(uploaded_file)
                 vector_store = create_vector_store(chunks)
@@ -60,14 +71,14 @@ if uploaded_file:
                 st.session_state.pdf_name = uploaded_file.name
                 st.session_state.messages = []
                 st.success(
-                    f"✅ PDF ready: **{uploaded_file.name}**"
+                    f"✅ PDF processed: **{uploaded_file.name}**"
                 )
             except Exception as e:
                 st.error(f"❌ Error: {str(e)}")
 
 if st.session_state.pdf_loaded:
     st.success(f"✅ Loaded: **{st.session_state.pdf_name}**")
-    if st.button("🔄 Nayi PDF Upload karo"):
+    if st.button("🔄 Upload New PDF"):
         st.session_state.pdf_loaded = False
         st.session_state.qa_chain = None
         st.session_state.messages = []
@@ -77,7 +88,7 @@ st.divider()
 
 # ── Chat ──────────────────────────────────────────────────
 if st.session_state.pdf_loaded and st.session_state.qa_chain:
-    st.subheader("💬 Questions Poochho")
+    st.subheader("💬 Ask Questions")
 
     for msg in st.session_state.messages:
         with st.chat_message(msg["role"]):
@@ -85,7 +96,7 @@ if st.session_state.pdf_loaded and st.session_state.qa_chain:
             if msg["role"] == "assistant" and msg.get("pages"):
                 st.caption(f"📌 Source Pages: {msg['pages']}")
 
-    question = st.chat_input("Apna question likho...")
+    question = st.chat_input("Ask anything about your PDF...")
 
     if question:
         with st.chat_message("user"):
@@ -96,7 +107,7 @@ if st.session_state.pdf_loaded and st.session_state.qa_chain:
         })
 
         with st.chat_message("assistant"):
-            with st.spinner("Soch raha hoon..."):
+            with st.spinner("Thinking..."):
                 try:
                     answer, pages = get_answer(
                         st.session_state.qa_chain,
@@ -113,4 +124,4 @@ if st.session_state.pdf_loaded and st.session_state.qa_chain:
                 except Exception as e:
                     st.error(f"❌ Error: {str(e)}")
 else:
-    st.info("👆 Pehle PDF upload karo!")
+    st.info("👆 Please upload a PDF to get started!")
