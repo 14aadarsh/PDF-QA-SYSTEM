@@ -1,5 +1,5 @@
 import streamlit as st
-from Pdf_Loader import load_and_split_pdf
+from pdf_loader import load_and_split_pdf
 from vector_store import create_vector_store
 from qa_chain import create_qa_chain, get_answer
 
