@@ -13,11 +13,8 @@ st.set_page_config(
 # ── Sidebar ───────────────────────────────────────────────
 with st.sidebar:
     st.title("⚙️ Settings")
-    api_key = st.text_input(
-        "Groq API Key",
-        type="password",
-        placeholder="gsk-..."
-    )
+    import os
+    api_key = os.environ.get("GROQ_API_KEY", "")
     st.caption("🔒 Key safe hai — sirf is session mein use hogi")
     st.divider()
     st.markdown("### Kaise use karein:")
