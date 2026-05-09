@@ -10,20 +10,6 @@ st.set_page_config(
     layout="centered"
 )
 
-# ── Sidebar ───────────────────────────────────────────────
-with st.sidebar:
-    st.title("⚙️ Settings")
-    import os
-    api_key = os.environ.get("GROQ_API_KEY", "")
-    st.caption("🔒 Key safe hai — sirf is session mein use hogi")
-    st.divider()
-    st.markdown("### Kaise use karein:")
-    st.markdown("1️⃣ Groq API Key daalo")
-    st.markdown("2️⃣ PDF upload karo")
-    st.markdown("3️⃣ Question poochho")
-    st.markdown("4️⃣ Answer pao ✅")
-    st.divider()
-    st.markdown("🔗 Key yahan se lo: [console.groq.com](https://console.groq.com)")
 
 # ── Title ─────────────────────────────────────────────────
 st.title("📄 PDF Question Answering System")
